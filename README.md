@@ -1,229 +1,154 @@
-# 🌐 AI-Powered Web Scraping System
+# AI Web Scraper
 
-A complete AI web scraping system with **intelligent reasoning agent** that understands natural language prompts, automatically finds content, and extracts full information.
+An AI-powered web scraping system that understands natural language prompts, automatically searches for content, visits websites, skips login/paywalled pages, and extracts structured data.
 
-## 🧠 NEW: Intelligent Reasoning Agent
-
-**No URL needed!** Just tell it what you want:
-- "scrape top 10 blogs ranking on digital marketing strategies"
-- "get best SEO optimization tips"
-- "extract latest tech news"
-- "find best laptops under 50000"
-
-The agent automatically:
-- 🔍 **Removes only scraping words** - Keeps your query exactly as typed
-- 🌐 **Searches Google** with the exact query
-- 🖱️ **ACTUALLY VISITS each website** using Playwright (not just URLs!)
-- 📄 Extracts **full content** (complete blogs, articles, news)
-- ✅ Always includes: title, description, content, source_url
-- 🤖 Plans strategy based on your goal
-- 🎯 Context-aware extraction (blogs vs articles vs products)
+No URL needed — just describe what you want.
 
 ---
 
-## 📁 Project Structure
+## How it works
+
+1. You enter a natural language prompt (e.g. `top 10 blogs on digital marketing`)
+2. The AI analyzes intent — content type, fields, quantity
+3. DuckDuckGo (or Google fallback) searches for relevant URLs
+4. All URLs saved to `load_url.json`, top 3 to a text file
+5. Playwright visits each URL, skips login/paywall/403 pages
+6. Full content extracted from valid pages
+7. AI cleans and validates the data
+8. Results saved as JSON/CSV/Excel + displayed in UI
+
+---
+
+## Project Structure
 
 ```
-project/
-├── docs/              ← All documentation (20+ guides)
-├── src/
-│   ├── tests/         ← All test files
-│   ├── debug/         ← Debug logs (HTML + selectors)
-│   ├── logs/          ← Execution logs
-│   ├── output/        ← Scraped data
-│   └── *.py           ← Source code
-└── README.md          ← This file
+src/
+├── app.py                  ← Streamlit web UI
+├── scrape.py               ← CLI entry point
+├── config.py               ← Settings & API keys
+├── logger.py               ← Logging setup
+├── agents/
+│   ├── simple_search_agent.py   ← DuckDuckGo + Google search
+│   ├── smart_url_visitor.py     ← Visits URLs, skips login pages
+│   ├── url_generator.py         ← URL generation fallback
+│   └── google_search_agent.py   ← Google search agent
+├── pipeline/
+│   ├── main_scraper.py          ← Orchestrates all steps
+│   ├── intent_analyzer.py       ← Parses user prompt with AI
+│   ├── reasoning_agent.py       ← AI planning agent
+│   ├── intelligent_cleaner.py   ← AI data validation
+│   ├── data_cleaner.py          ← Rule-based cleaning
+│   └── data_storage.py          ← Saves output files
+├── extractors/
+│   ├── full_content_extractor.py ← Main HTML content extractor
+│   ├── universal_extractor.py    ← Multi-strategy extractor
+│   ├── heuristic_extractor.py    ← Pattern-based extraction
+│   ├── dom_analyzer.py           ← DOM structure analysis
+│   └── vision_selector.py        ← GPT-4o vision CSS selectors
+├── scrapers/
+│   ├── playwright_scraper.py     ← JS-rendered pages
+│   ├── scrapy_scraper.py         ← Fast static pages
+│   └── site_detector.py          ← Chooses scraper per site
+├── logs/                   ← scraper.log (gitignored)
+├── debug/                  ← Raw HTML debug dumps (gitignored)
+└── output/                 ← Scraped results (gitignored)
 ```
 
 ---
 
-## ⚡ Quick Start
+## Setup
 
 ```bash
-cd src
-pip install -r requirements.txt
-playwright install
-cp .env.example .env
-# Edit .env and add your OpenRouter API key
+# 1. Clone and install dependencies
+pip install -r src/requirements.txt
+playwright install chromium
 
-# Run interactive mode (no URL needed!)
-python scrape.py
-```
-
-**Example:**
-```
-Your prompt: top 10 blogs on SEO optimization
-URL (optional): [press Enter]
-
-✅ Agent finds URLs automatically!
-✅ Extracts full content from each URL!
-✅ Saves results with complete information!
+# 2. Configure API key
+cp src/.env.example src/.env
+# Edit src/.env and set your OpenRouter API key
+# Get one free at: https://openrouter.ai/keys
 ```
 
 ---
 
-## 📚 Documentation
+## Usage
 
-All documentation is in the `docs/` directory:
+### Streamlit UI
 
-- **[docs/INTELLIGENT_AGENT_QUICK_START.md](docs/INTELLIGENT_AGENT_QUICK_START.md)** - New intelligent agent guide ⭐⭐⭐
-- **[docs/INTELLIGENT_AGENT_COMPLETE.md](docs/INTELLIGENT_AGENT_COMPLETE.md)** - Full intelligent agent docs
-- **[docs/START_HERE.md](docs/START_HERE.md)** - Quick setup guide
-- **[docs/HOW_TO_RUN.md](docs/HOW_TO_RUN.md)** - How to run
-- **[docs/UNIVERSAL_SCRAPER.md](docs/UNIVERSAL_SCRAPER.md)** - Works with ANY URL
-- **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** - Problem solving
-- **[docs/README.md](docs/README.md)** - Full documentation index
-
----
-
-## 🎯 Features
-
-✅ **Intelligent reasoning agent** (AI brain that plans and decides) 🆕  
-✅ **No URL needed** (auto-searches Google) 🆕  
-✅ **Full content extraction** (complete blogs, articles, news) 🆕  
-✅ **Mandatory fields** (title, description, content, source_url) 🆕  
-✅ **Context-aware** (understands blogs vs articles vs products) 🆕  
-✅ Natural language prompts  
-✅ Automatic site detection  
-✅ JavaScript rendering (Playwright)  
-✅ Fast static scraping (Scrapy)  
-✅ Vision AI selector generation  
-✅ AI-powered intelligent cleaning  
-✅ Data cleaning & validation  
-✅ Multiple output formats (JSON, YAML, CSV, Excel, SQLite)  
-✅ Comprehensive logging  
-✅ Debug logging (HTML + selectors saved)  
-✅ 30+ tests, all passing  
-
----
-
-## 💻 Usage
-
-### Interactive Mode (Recommended)
 ```bash
-cd src
-python scrape.py
+streamlit run src/app.py
 ```
 
-**No URL needed!** Just enter your prompt:
-```
-Your prompt: top 10 blogs on SEO optimization
-URL (optional): [press Enter]
-```
+Opens at `http://localhost:8501` — enter your prompt, adjust settings in the sidebar, click Start Scraping.
 
-### Command Line
+### CLI — Interactive
+
 ```bash
-cd src
-# No URL needed!
-python scrape.py --prompt "latest tech news"
+python src/scrape.py
+```
 
-# Or with specific URL
-python scrape.py --prompt "scrape 10 articles" --url "https://news.ycombinator.com"
+### CLI — Arguments
+
+```bash
+# Auto-search (no URL needed)
+python src/scrape.py --prompt "top 10 email marketing platforms"
+
+# With a specific URL
+python src/scrape.py --prompt "scrape 5 articles" --url "https://news.ycombinator.com"
+
+# Save as CSV
+python src/scrape.py --prompt "best laptops under 50000" --format csv
+
+# Enable Vision AI (uses GPT-4o for CSS selector generation)
+python src/scrape.py --prompt "scrape products" --url "https://example.com" --vision
 ```
 
 ### Python API
+
 ```python
-# From src/ directory
-from main_scraper import WebScraper
+import sys
+sys.path.insert(0, "src")
+from pipeline.main_scraper import WebScraper
 
 scraper = WebScraper(use_intelligent_cleaning=True)
+result = scraper.scrape(prompt="top 5 blogs on machine learning")
 
-# No URL needed!
-result = scraper.scrape(
-    prompt="top 10 blogs on SEO optimization"
-)
-
-# Access full content
-for item in result['items']:
-    print(f"Title: {item['title']}")
-    print(f"Full Content: {item['content'][:200]}...")
-    print(f"Source: {item['source_url']}")
+for item in result["items"]:
+    print(item["title"], item["source_url"])
 ```
 
 ---
 
-## 🧪 Testing
+## Output
 
-```bash
-cd src
+Each run saves two versions:
 
-# Test intelligent agent (no URL needed!)
-python test_intelligent_agent.py
+- `*_raw.*` — data as extracted, before any cleaning
+- `*_cleaned.*` — validated and cleaned by AI
 
-# Test news extraction
-python test_news_extraction.py
+Supported formats: `json`, `csv`, `excel`, `yaml`, `sqlite`, `all`
 
-# Quick test with URL
-python tests/quick_test.py https://news.ycombinator.com
+All files go to `src/output/`.
 
-# Test any URL
-python tests/test_any_url.py https://example.com
+---
 
-# Run all tests
-python tests/test_simple.py
+## Environment Variables
+
+```env
+OPENROUTER_API_KEY=sk-or-v1-...   # Required — get from openrouter.ai/keys
 ```
 
----
-
-## 🐛 Debug Logging
-
-Every scrape saves debug information to `src/debug/`:
-
-```json
-{
-  "url": "https://example.com",
-  "html_length": 1080870,
-  "html_full": "<!DOCTYPE html>...",
-  "selectors": {"container": "div.article"},
-  "items_found": 10,
-  "extraction_method": "dom_analyzer"
-}
-```
-
-View debug files:
-```bash
-cd src/debug
-dir
-```
+Model used: `openai/gpt-3.5-turbo` via OpenRouter.
 
 ---
 
-## 📊 Output
+## Tech Stack
 
-All data is saved to `src/output/` directory:
-- JSON (default)
-- YAML (human-readable)
-- CSV (Excel-compatible)
-- Excel (.xlsx)
-- SQLite (queryable)
-
----
-
-## 🎯 System Status
-
-✅ **Intelligent Agent**: Complete (reasoning, planning, full content) 🆕  
-✅ **Google Search**: Auto-finds URLs (no URL needed!) 🆕  
-✅ **Full Content**: Extracts complete blogs/articles/news 🆕  
-✅ **Core System**: 9/9 steps (100%)  
-✅ **Vision AI**: Integrated  
-✅ **Tests**: 30+ passing  
-✅ **Storage**: 5 formats  
-✅ **Debug**: HTML + selectors logged  
-✅ **Production**: Ready  
-
----
-
-## 📞 Need Help?
-
-1. **Quick Setup**: Read `docs/START_HERE.md`
-2. **Full Docs**: Read `docs/README.md`
-3. **How to Run**: Read `docs/HOW_TO_RUN.md`
-4. **Troubleshooting**: Read `docs/TROUBLESHOOTING.md`
-5. **Check Logs**: `src/logs/scraper.log`
-6. **Check Debug**: `src/debug/*.json`
-
----
-
-**Built with**: Python, OpenRouter, LangGraph, Playwright, Vision AI, Intelligent Reasoning Agent  
-**Status**: Production Ready ✅  
-**Version**: 2.0.0 (Intelligent Agent)
+- Python 3.10+
+- [LangGraph](https://github.com/langchain-ai/langgraph) — agent orchestration
+- [Playwright](https://playwright.dev/python/) — JS rendering & URL visiting
+- [Scrapy](https://scrapy.org/) — fast static scraping
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) — HTML parsing
+- [OpenRouter](https://openrouter.ai/) — LLM API (GPT-3.5-Turbo)
+- [Streamlit](https://streamlit.io/) — web UI
+- [ddgs](https://pypi.org/project/ddgs/) — DuckDuckGo search

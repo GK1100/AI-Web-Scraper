@@ -1,0 +1,79 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Scrapy
+.scrapy/
+.scrapy_cache/
+
+# Output files
+raw_data.json
+final_results.json
+spider_config.json
+output.log
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Archive
+archive/
+
+# Markdown docs (except README)
+*.md
+!README.md
+
+# Logs directory (keep folder, ignore contents)
+src/logs/*
+!src/logs/.gitkeep
+
+# Debug directory (keep folder, ignore contents)
+src/debug/*
+!src/debug/.gitkeep
+
+# Output directory (keep folder, ignore contents)
+src/output/*
+!src/output/.gitkeep
