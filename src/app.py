@@ -6,6 +6,21 @@ Run: streamlit run src/app.py
 import sys
 import os
 import json
+import subprocess
+
+# Install Playwright browsers at runtime (required on Streamlit Cloud)
+# Runs once — subsequent runs skip because the binary already exists
+_browser_marker = os.path.expanduser("~/.cache/ms-playwright/.installed")
+if not os.path.exists(_browser_marker):
+    subprocess.run(
+        [sys.executable, "-m", "playwright", "install", "chromium", "--with-deps"],
+        check=False
+    )
+    # Write marker so we don't reinstall on every rerun
+    os.makedirs(os.path.dirname(_browser_marker), exist_ok=True)
+    open(_browser_marker, "w").close()
+
+
 
 # Path setup — same as scrape.py
 _src = os.path.dirname(os.path.abspath(__file__))
