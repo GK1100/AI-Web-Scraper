@@ -18,21 +18,6 @@ sys.path.insert(0, _src)
 import json
 import asyncio
 import subprocess
-
-# Ensure Playwright browsers are installed (handles Render where build cache may not persist)
-_pw_marker = os.path.expanduser("~/.cache/ms-playwright/.installed")
-if not os.path.exists(_pw_marker):
-    logger_tmp = __import__("logging").getLogger(__name__)
-    logger_tmp.info("🔧 Installing Playwright Chromium browser...")
-    result = subprocess.run(
-        [sys.executable, "-m", "playwright", "install", "chromium", "--with-deps"],
-        capture_output=True, text=True
-    )
-    if result.returncode == 0:
-        os.makedirs(os.path.dirname(_pw_marker), exist_ok=True)
-        open(_pw_marker, "w").close()
-    else:
-        logger_tmp.warning(f"Playwright install warning: {result.stderr[:200]}")
 from typing import List, Dict
 from logger import setup_logger
 from full_content_extractor import FullContentExtractor
@@ -120,6 +105,12 @@ class SmartURLVisitor:
         failed = 0
 
         async with async_playwright() as p:
+            # Install browser binary if missing (Render free tier doesn't persist build cache)
+            logger.info("🔧 Ensuring Chromium is installed...")
+            subprocess.run(
+                [sys.executable, "-m", "playwright", "install", "chromium"],
+                check=False, capture_output=True
+            )
             browser = await p.chromium.launch(headless=True)
             context = await browser.new_context(
                 user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
