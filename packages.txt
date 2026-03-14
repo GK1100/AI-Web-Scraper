@@ -1,3 +1,4 @@
+libglib2.0-0
 libnss3
 libxcomposite1
 libxdamage1
