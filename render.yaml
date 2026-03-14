@@ -9,4 +9,6 @@ services:
         sync: false
       - key: PLAYWRIGHT_BROWSERS_PATH
         value: /opt/render/.cache/ms-playwright
+      - key: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD
+        value: 0
     autoDeploy: true

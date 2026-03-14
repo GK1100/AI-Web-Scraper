@@ -17,6 +17,8 @@ sys.path.insert(0, _src)
 
 import json
 import asyncio
+import os
+os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", "/opt/render/.cache/ms-playwright")
 from typing import List, Dict
 from logger import setup_logger
 from full_content_extractor import FullContentExtractor
