@@ -8,9 +8,6 @@ import os
 import json
 import subprocess
 
-# Install Playwright browsers at runtime (required on Streamlit Cloud)
-subprocess.run(["playwright", "install", "chromium"], check=False)
-
 
 
 # Path setup — same as scrape.py

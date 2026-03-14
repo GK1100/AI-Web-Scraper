@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ai-web-scraper
+    runtime: python
+    buildCommand: bash build.sh
+    startCommand: streamlit run src/app.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: PLAYWRIGHT_BROWSERS_PATH
+        value: /opt/render/.cache/ms-playwright
+    autoDeploy: true
