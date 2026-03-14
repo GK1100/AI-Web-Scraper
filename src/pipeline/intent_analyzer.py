@@ -102,12 +102,12 @@ class IntentAnalyzer:
         except json.JSONDecodeError as e:
             log_step(logger, "Intent Analysis", "FAILED", {"error": f"JSON parse error: {e}"})
             logger.error(f"Failed to parse JSON: {content}")
-            return None
+            return self._default_intent(user_prompt)
         
         except Exception as e:
             log_step(logger, "Intent Analysis", "FAILED", {"error": str(e)})
             logger.exception("Unexpected error in intent analysis")
-            return None
+            return self._default_intent(user_prompt)
     
     def _create_system_prompt(self) -> str:
         """Create system prompt for intent understanding"""
@@ -161,7 +161,23 @@ Response: {{"content_type": "reviews", "fields": ["text", "rating", "reviewer"],
 
 Now analyze the user's request and return JSON:"""
     
-    def _validate_and_create_intent(self, data: dict) -> Optional[ScrapingIntent]:
+    def _default_intent(self, user_prompt: str) -> 'ScrapingIntent':
+        """Return a sensible default intent when AI analysis fails."""
+        import re
+        # Try to extract a quantity from the prompt (e.g. "top 10", "5 articles")
+        match = re.search(r'\b(\d+)\b', user_prompt)
+        quantity = int(match.group(1)) if match else 10
+
+        logger.warning(f"⚠️ Using default intent (quantity={quantity})")
+        return ScrapingIntent(
+            content_type="articles",
+            fields=["title", "description", "content", "source_url"],
+            quantity=quantity,
+            filters=[],
+            reasoning="Default intent — AI analysis unavailable"
+        )
+
+    def _validate_and_create_intent(self, data: dict) -> 'ScrapingIntent':
         """
         Validate intent data and create ScrapingIntent object
         
@@ -182,11 +198,11 @@ Now analyze the user's request and return JSON:"""
             # Validation
             if not content_type:
                 logger.error("Missing content_type in intent")
-                return None
+                return self._default_intent("")
             
             if not fields or not isinstance(fields, list):
                 logger.error("Missing or invalid fields in intent")
-                return None
+                return self._default_intent("")
             
             if not isinstance(quantity, int) or quantity <= 0:
                 logger.warning(f"Invalid quantity {quantity}, using default 10")
@@ -206,4 +222,4 @@ Now analyze the user's request and return JSON:"""
         
         except Exception as e:
             logger.error(f"Failed to validate intent: {e}")
-            return None
+            return self._default_intent("")

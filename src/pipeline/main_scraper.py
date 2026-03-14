@@ -146,7 +146,7 @@ class WebScraper:
             logger.info("🔍 Pre-analyzing intent to determine quantity...")
             try:
                 _early_intent = self.intent_analyzer.analyze(prompt)
-                target_quantity = _early_intent.quantity or 10
+                target_quantity = (_early_intent.quantity if _early_intent else None) or 10
             except Exception:
                 target_quantity = 10
             logger.info(f"🎯 Target quantity from prompt: {target_quantity}")
